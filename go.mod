@@ -1,4 +1,4 @@
-module bdxcore
+module github.com/cosmoscore/bdxcore
 
 go 1.16
 
