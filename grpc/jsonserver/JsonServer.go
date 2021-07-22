@@ -1,7 +1,8 @@
-package grpc
+package jsonserver
 
 import (
-	"bdxcore/network"
+	"github.com/cosmoscore/bdxcore/grpc/jsonserver/service"
+	"github.com/cosmoscore/bdxcore/network"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -14,6 +15,13 @@ type JsonServer struct {
 	listener net.Listener
 }
 
+func NewServer(port int) *JsonServer {
+	jsonServer := &JsonServer{}
+	jsonServer.port = port
+
+	return jsonServer
+}
+
 func (p *JsonServer) Start() {
 	var err error
 	p.listener, err = net.Listen("tcp", network.GetOutboundAddress(p.port))
@@ -21,7 +29,7 @@ func (p *JsonServer) Start() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	p.server = grpc.NewServer()
-	//pb.RegisterGreeterServer(s, &server{})
+	service.RegisterJsonServiceServer(p.server,  service.JsonServiceServer{})
 
 	reflection.Register(p.server)
 	if err := p.server.Serve(p.listener); err != nil {

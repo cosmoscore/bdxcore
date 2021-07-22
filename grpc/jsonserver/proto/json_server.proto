@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package server;
+
+option go_package = ".;service";
+//protoc -I proto/ proto/json_server.proto --go_out=plugins=grpc:./service
+
+service JsonService {
+  rpc Post (JsonRequest) returns (JsonResponse) {}
+}
+
+message JsonRequest {
+  string routePath = 1;
+  string msg = 2;
+}
+
+message JsonResponse {
+  string msg = 1;
+}
