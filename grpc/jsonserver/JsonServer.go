@@ -1,6 +1,7 @@
 package jsonserver
 
 import (
+	"context"
 	"github.com/cosmoscore/bdxcore/grpc/jsonserver/service"
 	"github.com/cosmoscore/bdxcore/network"
 	"google.golang.org/grpc"
@@ -29,7 +30,7 @@ func (p *JsonServer) Start() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	p.server = grpc.NewServer()
-	service.RegisterJsonServiceServer(p.server,  service.JsonServiceServer{})
+	service.RegisterJsonServiceServer(p.server, &JsonServer{})
 
 	reflection.Register(p.server)
 	if err := p.server.Serve(p.listener); err != nil {
@@ -45,4 +46,8 @@ func (p *JsonServer) Stop() {
 	if p.listener != nil {
 		p.listener.Close()
 	}
+}
+
+func (p *JsonServer) Post(context.Context, *service.JsonRequest) (*service.JsonResponse, error) {
+	return &service.JsonResponse{Msg: `{"key":"test"}`}, nil
 }
